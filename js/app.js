@@ -15,11 +15,17 @@ function cargarEventListeners() {
     // Elimina cursos del carrito
     carrito.addEventListener('click', eliminarProducto);
 
-     // Vaciar carrito
+    //Muestra los productos de local storage
+    document.addEventListener('DOMContentLoaded', () => {
+        productosCarrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        carritoHTML();
+    });
+
+    // Vaciar carrito
     vaciarcarritoBtn.addEventListener('click', () => {
         productosCarrito = []; //reseteamos el arreglo
         limpiarHTML(); //Eliminamos todo el HTML
-    })
+    });
 }
 
 //Funciones
@@ -72,7 +78,7 @@ function leerDatosProducto(producto) {
         productosCarrito = [...productos];
     } else {
         //Agrega elementos al arreglo carrito
-       productosCarrito = [...productosCarrito, infoProducto];
+        productosCarrito = [...productosCarrito, infoProducto];
     }
     console.log(productosCarrito);
     carritoHTML();
@@ -84,7 +90,7 @@ function carritoHTML() {
     limpiarHTML();
     productosCarrito.forEach(producto => {
         const row = document.createElement('tr');
-        const{imagen, titulo, precio, cantidad, id}=producto;
+        const { imagen, titulo, precio, cantidad, id } = producto;
         row.innerHTML = `
             <td>
                 <img src="${imagen}" width="100">
@@ -92,12 +98,18 @@ function carritoHTML() {
              <td>${titulo}</td>
             <td>${precio}</td>
             <td>${cantidad}</td>
-           <td><a href="#" class="btn btn-outline-warning borrar-producto" data-id="${id}"><i class="fa fa-trash"></i></a></td>
-            `;
-            
+           <td><a href="#" class="btn btn-outline-warning borrar-producto" data-id="${id}"><i class="fa fa-trash"></i></a></td>`;
+
         // Agrega el HTML del carrito en el tbody
         contenedorCarrito.appendChild(row);
     });
+
+    //Agregar el carrito de compras a storage
+    sincronizarStorage();
+}
+//Agrega los tweets a localstorage
+function sincronizarStorage() {
+    localStorage.setItem('carrito', JSON.stringify(productosCarrito));
 }
 
 //Elimina los productos del tbody
